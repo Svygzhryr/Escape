@@ -1,9 +1,13 @@
 import { useState } from "react";
 import styles from "../styles/Gamegrid.module.css";
 import { cellMapper, setupInitialGrid } from "../utils/constants";
+import type { EnemyCoordinates } from "../types";
 
 export const Gamegrid = () => {
-  const [grid, setGrid] = useState<number[][]>(setupInitialGrid(9, 9));
+  const [grid, setGrid] = useState<number[][]>(setupInitialGrid(gridSize));
+  const [enemyPosition, setEnemyPosition] = useState<EnemyCoordinates>(
+    setupEnemyStartingPosition(gridSize)
+  );
 
   const handleCellClick = (x: number, y: number): void => {
     if (grid[y][x] === 1) return;

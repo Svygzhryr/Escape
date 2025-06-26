@@ -1,5 +1,19 @@
+import type { Coordinates } from "../types";
+
 // empty, moving entity, blocked cell, exit cell
 export const cellMapper = ["", "@", "X", ""];
+
+export const gridSize = {
+  x: 9,
+  y: 9,
+};
+
+export const setupEnemyStartingPosition = (gridSize: Coordinates) => {
+  const { x, y } = gridSize;
+
+  const startingX = Math.floor(x / 2);
+  const startingY = Math.floor(y / 2);
+};
 
 // strictly type grid
 export const setupInitialGrid = (x: number, y: number): number[][] => {
