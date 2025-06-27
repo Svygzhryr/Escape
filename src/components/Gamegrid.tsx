@@ -1,7 +1,8 @@
 import styles from "../styles/Gamegrid.module.css";
-import { cellMapper, gridSize } from "../utils/constants";
+import { gridSize } from "../utils/constants";
 import { useSetupGrid } from "../utils/hooks";
 import { processEnemyTurn } from "../utils/index ";
+import rat from "../assets/rat.svg";
 
 export const Gamegrid = () => {
   const { grid, setGrid, enemyPosition, setEnemyPosition } =
@@ -32,8 +33,16 @@ export const Gamegrid = () => {
     });
   };
 
-  const defineCellState = (x: number, y: number): string => {
+  const defineCellState = (x: number, y: number) => {
+    const cellMapper = [
+      "",
+      <img className={styles.rat} src={rat}></img>,
+      <div className={styles.block}></div>,
+      "",
+    ];
+
     const cellValue = grid[y][x];
+
     return cellMapper[cellValue];
   };
 
