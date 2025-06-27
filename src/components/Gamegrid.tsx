@@ -1,22 +1,36 @@
-import { useState } from "react";
 import styles from "../styles/Gamegrid.module.css";
-import { cellMapper, setupInitialGrid } from "../utils/constants";
-import type { EnemyCoordinates } from "../types";
+import { cellMapper, gridSize } from "../utils/constants";
+import { useSetupGrid } from "../utils/hooks";
+import { processEnemyTurn } from "../utils/index ";
 
 export const Gamegrid = () => {
-  const [grid, setGrid] = useState<number[][]>(setupInitialGrid(gridSize));
-  const [enemyPosition, setEnemyPosition] = useState<EnemyCoordinates>(
-    setupEnemyStartingPosition(gridSize)
-  );
+  const { grid, setGrid, enemyPosition, setEnemyPosition } =
+    useSetupGrid(gridSize);
 
   const handleCellClick = (x: number, y: number): void => {
-    if (grid[y][x] === 1) return;
+    if (grid[y][x] === 1 || grid[y][x] === 2) return;
 
     const newGrid = structuredClone(grid);
 
     newGrid[y][x] = 2;
 
     setGrid(newGrid);
+
+    console.log(grid);
+
+    setTimeout(() => {
+      const { x: old_x, y: old_y } = enemyPosition;
+      const { new_x, new_y } = processEnemyTurn(
+        grid,
+        enemyPosition,
+        setEnemyPosition
+      );
+
+      newGrid[old_y][old_x] = 0;
+      newGrid[new_y][new_x] = 1;
+
+      setGrid(() => newGrid);
+    }, 500);
   };
 
   const defineCellState = (x: number, y: number): string => {
