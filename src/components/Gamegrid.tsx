@@ -7,29 +7,28 @@ export const Gamegrid = () => {
   const { grid, setGrid, enemyPosition, setEnemyPosition } =
     useSetupGrid(gridSize);
 
-  const handleCellClick = (x: number, y: number): void => {
-    if (grid[y][x] === 1 || grid[y][x] === 2) return;
-
+  const handlePlayerTurn = (x: number, y: number): number[][] => {
     // Create the first update with the player's move
     const gridAfterPlayerMove = structuredClone(grid);
     gridAfterPlayerMove[y][x] = 2;
 
-    setGrid(gridAfterPlayerMove);
+    return gridAfterPlayerMove;
+  };
+
+  const handleCellClick = (x: number, y: number): void => {
+    if (grid[y][x] === 1 || grid[y][x] === 2) return;
+
+    const gridAfterPlayerTurn = handlePlayerTurn(x, y);
+    setGrid(gridAfterPlayerTurn);
 
     // Use the most recent state to calculate enemy move
     setGrid((currentGrid) => {
-      const { x: old_x, y: old_y } = enemyPosition;
-      const { new_x, new_y } = processEnemyTurn(
+      const gridAfterEnemyTurn = processEnemyTurn(
         currentGrid,
         enemyPosition,
         setEnemyPosition
       );
-
-      const gridAfterEnemyMove = structuredClone(currentGrid);
-      gridAfterEnemyMove[old_y][old_x] = 0;
-      gridAfterEnemyMove[new_y][new_x] = 1;
-
-      return gridAfterEnemyMove;
+      return gridAfterEnemyTurn;
     });
   };
 

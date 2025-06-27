@@ -34,6 +34,7 @@ export const setupInitialGrid = (gridSize: Coordinates): number[][] => {
   return initialGrid;
 };
 
+// enemy ai implementation
 const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
   const directions = [
     [0, -1],
@@ -45,18 +46,16 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
   const availableDirections = [];
 
   for (const [xi, yi] of directions) {
-    // any exit cell nearby
     const nx = x + xi;
     const ny = y + yi;
 
+    // any exit cell nearby
     if (grid[ny][nx] === 3) {
       alert("you lose!");
       return [nx, ny];
     }
     if (grid[ny][nx] === 0) availableDirections.push([nx, ny]);
   }
-
-  console.log(availableDirections);
 
   // nowhere to go
   if (!availableDirections.length) {
@@ -65,7 +64,7 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
   }
 
   const randomDirectionIndex = Math.floor(
-    Math.random() * availableDirections.length - 1
+    Math.random() * availableDirections.length
   );
 
   const chosenDirection = availableDirections[randomDirectionIndex];
@@ -75,7 +74,6 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
   return [xi, yi];
 };
 
-// enemy ai implementation
 export const processEnemyTurn = (
   grid: number[][],
   position: Coordinates,
@@ -87,5 +85,10 @@ export const processEnemyTurn = (
 
   setEnemyPosition({ x: new_x, y: new_y });
 
-  return { new_x, new_y };
+  const gridAfterEnemyTurn = structuredClone(grid);
+
+  gridAfterEnemyTurn[y][x] = 0;
+  gridAfterEnemyTurn[new_y][new_x] = 1;
+
+  return gridAfterEnemyTurn;
 };
