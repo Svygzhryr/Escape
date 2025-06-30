@@ -1,5 +1,7 @@
 import type { Coordinates } from "../types";
 
+import { gameOverStrings } from "./constants";
+
 export const setupEnemyStartingPosition = (gridSize: Coordinates) => {
   const { x, y } = gridSize;
 
@@ -34,6 +36,10 @@ export const setupInitialGrid = (gridSize: Coordinates): number[][] => {
   return initialGrid;
 };
 
+const handleGameOver = (outcome: "win" | "lose") => {
+  alert(gameOverStrings[outcome]);
+};
+
 // enemy ai implementation
 const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
   const directions = [
@@ -51,7 +57,7 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
 
     // any exit cell nearby
     if (grid[ny][nx] === 3) {
-      alert("you lose!");
+      handleGameOver("lose");
       return [nx, ny];
     }
     if (grid[ny][nx] === 0) availableDirections.push([nx, ny]);
@@ -59,7 +65,7 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
 
   // nowhere to go
   if (!availableDirections.length) {
-    alert("you won!");
+    handleGameOver("win");
     return [x, y];
   }
 
@@ -77,7 +83,8 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
 export const processEnemyTurn = (
   grid: number[][],
   position: Coordinates,
-  setEnemyPosition: React.Dispatch<React.SetStateAction<Coordinates>>
+  setEnemyPosition: React.Dispatch<React.SetStateAction<Coordinates>>,
+  setGameState
 ) => {
   const { x, y } = position;
 

@@ -3,10 +3,15 @@ import { gridSize } from "../utils/constants";
 import { useSetupGrid } from "../utils/hooks";
 import { processEnemyTurn } from "../utils/index ";
 import rat from "../assets/rat.svg";
+import type { FC } from "react";
+import type { GamegridProps } from "../types";
+import { Gameroverscreen } from "./Gameroverscreen";
 
-export const Gamegrid = () => {
+// think about how to handle gamestate
+export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
   const { grid, setGrid, enemyPosition, setEnemyPosition } =
     useSetupGrid(gridSize);
+  const { over: isGameOver } = gamestate;
 
   const handlePlayerTurn = (x: number, y: number): number[][] => {
     // Create the first update with the player's move
@@ -29,7 +34,7 @@ export const Gamegrid = () => {
         enemyPosition,
         setEnemyPosition
       );
-      return gridAfterEnemyTurn;
+      return gridAfterEnemyTurn ?? currentGrid;
     });
   };
 
@@ -47,20 +52,26 @@ export const Gamegrid = () => {
   };
 
   return (
-    <div className={styles.grid}>
-      {grid.map((row, y) => (
-        <div className={styles.row} key={y}>
-          {row.map((_, x) => (
-            <div
-              onClick={() => handleCellClick(x, y)}
-              className={styles.cell}
-              key={`${x}-${y}`}
-            >
-              {defineCellState(x, y)}
+    <>
+      {isGameOver ? (
+        <Gameroverscreen />
+      ) : (
+        <div className={styles.grid}>
+          {grid.map((row, y) => (
+            <div className={styles.row} key={y}>
+              {row.map((_, x) => (
+                <div
+                  onClick={() => handleCellClick(x, y)}
+                  className={styles.cell}
+                  key={`${x}-${y}`}
+                >
+                  {defineCellState(x, y)}
+                </div>
+              ))}
             </div>
           ))}
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 };
