@@ -1,11 +1,13 @@
+import type { FC } from "react";
+
+import type { GamegridProps } from "../types";
+import rat from "../assets/rat.svg";
 import styles from "../styles/Gamegrid.module.css";
 import { gridSize } from "../utils/constants";
 import { useSetupGrid } from "../utils/hooks";
 import { processEnemyTurn } from "../utils/index ";
-import rat from "../assets/rat.svg";
-import type { FC } from "react";
-import type { GamegridProps } from "../types";
-import { Gameroverscreen } from "./Gameroverscreen";
+
+import { Gameoverscreen } from "./Gameoverscreen";
 
 // think about how to handle gamestate
 export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
@@ -29,12 +31,19 @@ export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
 
     // Use the most recent state to calculate enemy move
     setGrid((currentGrid) => {
-      const gridAfterEnemyTurn = processEnemyTurn(
+      const enemyTurnOutcome = processEnemyTurn(
         currentGrid,
         enemyPosition,
         setEnemyPosition
       );
-      return gridAfterEnemyTurn ?? currentGrid;
+
+      // if game is over handle this
+      if ("over" in enemyTurnOutcome) {
+        setGamestate(enemyTurnOutcome);
+        return currentGrid;
+      } else {
+        return enemyTurnOutcome;
+      }
     });
   };
 
@@ -54,7 +63,7 @@ export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
   return (
     <>
       {isGameOver ? (
-        <Gameroverscreen />
+        <Gameoverscreen gamestate={gamestate} />
       ) : (
         <div className={styles.grid}>
           {grid.map((row, y) => (

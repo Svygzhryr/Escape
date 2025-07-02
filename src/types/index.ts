@@ -5,6 +5,11 @@ export interface Coordinates {
 
 export interface Gamestate {
   over: boolean;
+  state?: "win" | "lose";
+}
+
+export interface GameoverscreenProps {
+  gamestate: Gamestate;
 }
 
 export interface GamegridProps {

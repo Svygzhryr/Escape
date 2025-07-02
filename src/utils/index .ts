@@ -1,6 +1,4 @@
-import type { Coordinates } from "../types";
-
-import { gameOverStrings } from "./constants";
+import type { Coordinates, Gamestate } from "../types";
 
 export const setupEnemyStartingPosition = (gridSize: Coordinates) => {
   const { x, y } = gridSize;
@@ -37,7 +35,9 @@ export const setupInitialGrid = (gridSize: Coordinates): number[][] => {
 };
 
 const handleGameOver = (outcome: "win" | "lose") => {
-  alert(gameOverStrings[outcome]);
+  const gamestate = { over: true, state: outcome };
+
+  return gamestate;
 };
 
 // enemy ai implementation
@@ -57,16 +57,14 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
 
     // any exit cell nearby
     if (grid[ny][nx] === 3) {
-      handleGameOver("lose");
-      return [nx, ny];
+      return handleGameOver("lose");
     }
     if (grid[ny][nx] === 0) availableDirections.push([nx, ny]);
   }
 
   // nowhere to go
   if (!availableDirections.length) {
-    handleGameOver("win");
-    return [x, y];
+    return handleGameOver("win");
   }
 
   const randomDirectionIndex = Math.floor(
@@ -83,19 +81,25 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
 export const processEnemyTurn = (
   grid: number[][],
   position: Coordinates,
-  setEnemyPosition: React.Dispatch<React.SetStateAction<Coordinates>>,
-  setGameState
-) => {
+  setEnemyPosition: React.Dispatch<React.SetStateAction<Coordinates>>
+): number[][] | Gamestate => {
   const { x, y } = position;
 
-  const [new_x, new_y] = checkNeighborCells(x, y, grid);
+  // return info about game over here
+  const neighborCheckOutcome = checkNeighborCells(x, y, grid);
 
-  setEnemyPosition({ x: new_x, y: new_y });
+  if ("over" in neighborCheckOutcome) {
+    return neighborCheckOutcome;
+  } else {
+    const [new_x, new_y] = neighborCheckOutcome;
 
-  const gridAfterEnemyTurn = structuredClone(grid);
+    setEnemyPosition({ x: new_x, y: new_y });
 
-  gridAfterEnemyTurn[y][x] = 0;
-  gridAfterEnemyTurn[new_y][new_x] = 1;
+    const gridAfterEnemyTurn = structuredClone(grid);
 
-  return gridAfterEnemyTurn;
+    gridAfterEnemyTurn[y][x] = 0;
+    gridAfterEnemyTurn[new_y][new_x] = 1;
+
+    return gridAfterEnemyTurn;
+  }
 };
