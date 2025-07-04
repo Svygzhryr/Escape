@@ -1,4 +1,7 @@
 :root {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
   /* Background & Grid (Dark to Light) */
   --color-bg-100: #121212; /* Darkest (almost black) */
   --color-bg-200: #1a1a1a; /* Base background */

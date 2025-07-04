@@ -1,7 +1,7 @@
 import type { FC } from "react";
 
 import type { GamegridProps } from "../types";
-import rat from "../assets/rat.svg";
+import mouse from "../assets/rat.svg";
 import styles from "../styles/Gamegrid.module.css";
 import { gridSize } from "../utils/constants";
 import { useSetupGrid } from "../utils/hooks";
@@ -13,7 +13,7 @@ import { Gameoverscreen } from "./Gameoverscreen";
 export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
   const { grid, setGrid, enemyPosition, setEnemyPosition } =
     useSetupGrid(gridSize);
-  const { over: isGameOver } = gamestate;
+  const { over: isGameOver, state: overState } = gamestate;
 
   const handlePlayerTurn = (x: number, y: number): number[][] => {
     // Create the first update with the player's move
@@ -50,7 +50,12 @@ export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
   const defineCellState = (x: number, y: number) => {
     const cellMapper = [
       "",
-      <img className={styles.rat} src={rat}></img>,
+      <img
+        className={`${styles.mouse} ${
+          overState === "lose" && styles.mouse_escaping
+        }`}
+        src={mouse}
+      ></img>,
       <div className={styles.block}></div>,
       "",
     ];
@@ -62,25 +67,22 @@ export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
 
   return (
     <>
-      {isGameOver ? (
-        <Gameoverscreen gamestate={gamestate} />
-      ) : (
-        <div className={styles.grid}>
-          {grid.map((row, y) => (
-            <div className={styles.row} key={y}>
-              {row.map((_, x) => (
-                <div
-                  onClick={() => handleCellClick(x, y)}
-                  className={styles.cell}
-                  key={`${x}-${y}`}
-                >
-                  {defineCellState(x, y)}
-                </div>
-              ))}
-            </div>
-          ))}
-        </div>
-      )}
+      {isGameOver && <Gameoverscreen gamestate={gamestate} />}
+      <div className={styles.grid}>
+        {grid.map((row, y) => (
+          <div className={styles.row} key={y}>
+            {row.map((_, x) => (
+              <div
+                onClick={() => handleCellClick(x, y)}
+                className={styles.cell}
+                key={`${x}-${y}`}
+              >
+                {defineCellState(x, y)}
+              </div>
+            ))}
+          </div>
+        ))}
+      </div>
     </>
   );
 };

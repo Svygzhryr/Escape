@@ -5,6 +5,6 @@ export const gridSize = {
 };
 
 export const gameOverStrings = {
-  win: "You win! You captured the mouse.",
-  lose: "You lose! The mouse has escaped.",
+  win: "You win!",
+  lose: "You lose.",
 };

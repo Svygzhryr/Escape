@@ -1,0 +1,33 @@
+.wrapper {
+  padding: 20px;
+  opacity: 0;
+}
+
+.wrapper-enter {
+  opacity: 1;
+}
+
+.wrapper-enter-active {
+  opacity: 1;
+}
+
+.modal {
+  position: absolute;
+
+  width: 300px;
+  height: 200px;
+
+  top: 50%;
+  left: 50%;
+
+  background-color: var(--color-bg-100);
+
+  transform: translate(-50%, -50%);
+}
+
+.mask {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}

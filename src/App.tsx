@@ -4,7 +4,9 @@ import "./styles/App.css";
 import type { Gamestate } from "./types";
 
 function App() {
-  const [gamestate, setGamestate] = useState<Gamestate>({ over: false });
+  const [gamestate, setGamestate] = useState<Gamestate>({
+    over: false,
+  });
 
   return (
     <>
