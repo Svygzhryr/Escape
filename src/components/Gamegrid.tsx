@@ -1,18 +1,23 @@
-import type { FC } from "react";
+import { useState } from "react";
 
-import type { GamegridProps } from "../types";
-import mouse from "../assets/rat.svg";
+import type { Gamestate } from "../types";
 import styles from "../styles/Gamegrid.module.css";
 import { gridSize } from "../utils/constants";
 import { useSetupGrid } from "../utils/hooks";
 import { processEnemyTurn } from "../utils/index ";
 
 import { Gameoverscreen } from "./Gameoverscreen";
+import { Mouse } from "./Mouse";
+import { createPortal } from "react-dom";
 
-// think about how to handle gamestate
-export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
+export const Gamegrid = () => {
   const { grid, setGrid, enemyPosition, setEnemyPosition } =
     useSetupGrid(gridSize);
+
+  const [gamestate, setGamestate] = useState<Gamestate>({
+    over: false,
+  });
+
   const { over: isGameOver, state: overState } = gamestate;
 
   const handlePlayerTurn = (x: number, y: number): number[][] => {
@@ -39,6 +44,7 @@ export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
 
       // if game is over handle this
       if ("over" in enemyTurnOutcome) {
+        console.log(enemyTurnOutcome);
         setGamestate(enemyTurnOutcome);
         return currentGrid;
       } else {
@@ -50,12 +56,7 @@ export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
   const defineCellState = (x: number, y: number) => {
     const cellMapper = [
       "",
-      <img
-        className={`${styles.mouse} ${
-          overState === "lose" && styles.mouse_escaping
-        }`}
-        src={mouse}
-      ></img>,
+      <Mouse gamestate={gamestate.state} />,
       <div className={styles.block}></div>,
       "",
     ];
@@ -67,7 +68,9 @@ export const Gamegrid: FC<GamegridProps> = ({ gamestate, setGamestate }) => {
 
   return (
     <>
-      {isGameOver && <Gameoverscreen gamestate={gamestate} />}
+      {isGameOver &&
+        createPortal(<Gameoverscreen gamestate={overState} />, document.body)}
+
       <div className={styles.grid}>
         {grid.map((row, y) => (
           <div className={styles.row} key={y}>

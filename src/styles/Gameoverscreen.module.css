@@ -1,6 +1,5 @@
 .wrapper {
-  padding: 20px;
-  opacity: 0;
+  opacity: 1;
 }
 
 .wrapper-enter {
@@ -13,6 +12,10 @@
 
 .modal {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
 
   width: 300px;
   height: 200px;
@@ -23,6 +26,8 @@
   background-color: var(--color-bg-100);
 
   transform: translate(-50%, -50%);
+
+  z-index: 2;
 }
 
 .mask {
@@ -30,4 +35,31 @@
   height: 100%;
   width: 100%;
   overflow: hidden;
+
+  top: 0;
+  left: 0;
+
+  background-color: var(--color-bg-100);
+  opacity: 0.5;
+
+  z-index: 1;
+}
+
+.button {
+  margin-top: 20px;
+  background-color: var(--color-bg-300);
+  outline: none;
+  border: none;
+  color: var(--color-text-800);
+
+  padding: 10px 20px;
+  font-size: 24px;
+
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.button:hover {
+  background-color: var(--color-ui-500);
+  color: var(--color-bg-100);
+  cursor: pointer;
 }

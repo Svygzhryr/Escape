@@ -9,7 +9,11 @@ export interface Gamestate {
 }
 
 export interface GameoverscreenProps {
-  gamestate: Gamestate;
+  gamestate?: "win" | "lose";
+}
+
+export interface MouseProps {
+  gamestate?: "win" | "lose";
 }
 
 export interface GamegridProps {
