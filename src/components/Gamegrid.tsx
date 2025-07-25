@@ -1,5 +1,7 @@
 import { useState } from "react";
 
+import { createPortal } from "react-dom";
+
 import type { Gamestate } from "../types";
 import styles from "../styles/Gamegrid.module.css";
 import { gridSize } from "../utils/constants";
@@ -8,13 +10,14 @@ import { processEnemyTurn } from "../utils/index ";
 
 import { Gameoverscreen } from "./Gameoverscreen";
 import { Mouse } from "./Mouse";
-import { createPortal } from "react-dom";
 
 export const Gamegrid = () => {
   const { grid, setGrid, enemyPosition, setEnemyPosition } =
     useSetupGrid(gridSize);
 
-  const [gamestate, setGamestate] = useState<Gamestate>({
+  const [gamestate, setGamestate] = useState<
+    Omit<Gamestate, "chosenDirection">
+  >({
     over: false,
   });
 
@@ -36,20 +39,20 @@ export const Gamegrid = () => {
 
     // Use the most recent state to calculate enemy move
     setGrid((currentGrid) => {
-      const enemyTurnOutcome = processEnemyTurn(
+      const { over, state, gridAfterEnemyTurn } = processEnemyTurn(
         currentGrid,
         enemyPosition,
         setEnemyPosition
       );
 
       // if game is over handle this
-      if ("over" in enemyTurnOutcome) {
-        console.log(enemyTurnOutcome);
-        setGamestate(enemyTurnOutcome);
-        return currentGrid;
-      } else {
-        return enemyTurnOutcome;
+      if (over) {
+        setGamestate({ over, state });
       }
+
+      console.log(gridAfterEnemyTurn);
+
+      return gridAfterEnemyTurn;
     });
   };
 
@@ -80,6 +83,7 @@ export const Gamegrid = () => {
                 className={styles.cell}
                 key={`${x}-${y}`}
               >
+                {grid[y][x]}
                 {defineCellState(x, y)}
               </div>
             ))}

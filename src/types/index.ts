@@ -6,6 +6,7 @@ export interface Coordinates {
 export interface Gamestate {
   over: boolean;
   state?: "win" | "lose";
+  chosenDirection: number[];
 }
 
 export interface GameoverscreenProps {
