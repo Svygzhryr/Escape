@@ -55,6 +55,8 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
     if (grid[ny][nx] === 3) {
       result["over"] = true;
       result["state"] = "lose";
+      result.chosenDirection = [nx, ny];
+      return result;
     }
     if (grid[ny][nx] === 0) availableDirections.push([nx, ny]);
   }
@@ -63,6 +65,8 @@ const checkNeighborCells = (x: number, y: number, grid: number[][]) => {
   if (!availableDirections.length) {
     result["over"] = true;
     result["state"] = "win";
+    result.chosenDirection = [x, y];
+    return result;
   }
 
   const randomDirectionIndex = Math.floor(

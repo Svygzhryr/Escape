@@ -83,7 +83,6 @@ export const Gamegrid = () => {
                 className={styles.cell}
                 key={`${x}-${y}`}
               >
-                {grid[y][x]}
                 {defineCellState(x, y)}
               </div>
             ))}
